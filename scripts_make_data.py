@@ -14,12 +14,14 @@ def sample_graph_traj(graph, num_trajs):
     traj = 0
     states_xy = []
     trial = 0
+
+    # 最短軌道をnum_trajs分作成 
     while traj < num_trajs:
         trial += 1
         # 試行回数が一定値以上を超えたら終了
         if trial > num_trajs * 2:
             break
-        # 目標ゴール
+        # 初期位置
         pos = (random.randint(1, domsize[0] - 1), random.randint(1, domsize[1] - 1))
         # 最短軌道を生成
         path = graph.get_shortest_path(pos)
@@ -90,8 +92,8 @@ def main():
             break
 
         G = Graph(im, goal)
-        value_prior = G.get_reward_prior()  # 最適報酬
-        states_xy = sample_graph_traj(G, num_trajs)
+        value_prior = G.get_reward_prior()              # 最適報酬
+        states_xy = sample_graph_traj(G, num_trajs)     # 状態履歴
 
         if len(states_xy) != num_trajs:
             print ('no trajectory added')
@@ -110,10 +112,10 @@ def main():
                 print (actions)
 
         data = {}
-        data['im'] = im_data[0:num_samples]
-        data['value'] = value_data[0:num_samples]
-        data['state'] = state_xy_data[0:num_samples]
-        data['label'] = label_data[0:num_samples]
+        data['im'] = im_data[0:num_samples]             # グリッドセル情報
+        data['value'] = value_data[0:num_samples]       # 最適報酬
+        data['state'] = state_xy_data[0:num_samples]    # 状態履歴
+        data['label'] = label_data[0:num_samples]       # 行動履歴
         with open('map_data.pkl', mode='wb') as f:
             pickle.dump(data, f)
 
